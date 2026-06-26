@@ -63,9 +63,21 @@ function isLoginDialog() {
     return !!dialog.querySelector('.fa-user')
 }
 
+// 判断是否为 Search 对话框
+function isSearchDialog() {
+    const dialog = document.querySelector('[role="dialog"]')
+    if (!dialog) return false
+    return dialog.id === 'search-dialog'
+}
+
+// 判断是否应该跳过（Login 或 Search 对话框）
+function shouldSkipDialog() {
+    return isLoginDialog() || isSearchDialog()
+}
+
 document.addEventListener('keydown', e => {
-    // Login 对话框直接跳过
-    if (isLoginDialog()) return
+    // Login 和 Search 对话框直接跳过
+    if (shouldSkipDialog()) return
 
     if (e.key === 'Enter') {
         if (isFormInputFocused()) {
@@ -113,7 +125,7 @@ document.addEventListener('keydown', e => {
 }, true)
 
 document.addEventListener('submit', e => {
-    if (isLoginDialog()) return
+    if (shouldSkipDialog()) return
     
     const continueBtn = findButton(/^(continue|继续)$/i)
     const yesBtn = findButton(/^(yes|确定|确认)$/i)
